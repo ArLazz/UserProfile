@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  userprofile:
+    build: ./
+    command: /userprofile-server --port=80
+    ports:
+      - 8041:80

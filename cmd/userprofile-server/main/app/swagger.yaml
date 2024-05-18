@@ -1,0 +1,167 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "User Profile Service"
+basePath: "/"
+schemes:
+  - "http"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+securityDefinitions:
+  basicAuth:
+    type: "basic"
+
+definitions:
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      email:
+        type: "string"
+      username:
+        type: "string"
+      password:
+        type: "string"
+      admin:
+        type: "boolean"
+  ErrorResponse:
+    type: object
+    properties:
+      message:
+        type: string
+
+paths:
+  /user:
+    get:
+      summary: "List all users"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+      security:
+        - basicAuth: []
+    post:
+      summary: "Create a new user"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "user"
+          description: "User object"
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        201:
+          description: "User created"
+        400:
+          description: "Invalid input"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: "Forbidden"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+        - basicAuth: []
+
+  /user/{id}:
+    get:
+      summary: "Get user by ID"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of user to return"
+          required: true
+          type: "string"
+          format: "uuid"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: "User not found"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+        - basicAuth: []
+    put:
+      summary: "Update user"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of user to update"
+          required: true
+          type: "string"
+          format: "uuid"
+        - in: "body"
+          name: "user"
+          description: "User object"
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "User updated"
+        400:
+          description: "Invalid input"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: "Forbidden"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        404:
+          description: "User not found"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+        - basicAuth: []
+    delete:
+      summary: "Delete user"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "ID of user to delete"
+          required: true
+          type: "string"
+          format: "uuid"
+      responses:
+        204:
+          description: "User deleted"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: "Forbidden"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        404:
+          description: "User not found"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+        - basicAuth: []

@@ -1,0 +1,17 @@
+version: '3'
+services:
+  userprofile:
+    build: ./
+    command: /userprofile-server
+    ports:
+      - 8080:8080
+    networks:
+      my_network:
+        ipv4_address: 192.168.1.100
+
+networks:
+  my_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
