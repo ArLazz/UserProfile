@@ -54,6 +54,12 @@ func init() {
                 "$ref": "#/definitions/User"
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
           }
         }
       },
@@ -129,6 +135,12 @@ func init() {
             "description": "Successful operation",
             "schema": {
               "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
             }
           },
           "404": {
@@ -315,6 +327,12 @@ func init() {
                 "$ref": "#/definitions/User"
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
           }
         }
       },
@@ -390,6 +408,12 @@ func init() {
             "description": "Successful operation",
             "schema": {
               "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
             }
           },
           "404": {

@@ -58,6 +58,51 @@ func (o *GetUserIDOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pro
 	}
 }
 
+// GetUserIDUnauthorizedCode is the HTTP code returned for type GetUserIDUnauthorized
+const GetUserIDUnauthorizedCode int = 401
+
+/*
+GetUserIDUnauthorized Unauthorized
+
+swagger:response getUserIdUnauthorized
+*/
+type GetUserIDUnauthorized struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ErrorResponse `json:"body,omitempty"`
+}
+
+// NewGetUserIDUnauthorized creates GetUserIDUnauthorized with default headers values
+func NewGetUserIDUnauthorized() *GetUserIDUnauthorized {
+
+	return &GetUserIDUnauthorized{}
+}
+
+// WithPayload adds the payload to the get user Id unauthorized response
+func (o *GetUserIDUnauthorized) WithPayload(payload *models.ErrorResponse) *GetUserIDUnauthorized {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get user Id unauthorized response
+func (o *GetUserIDUnauthorized) SetPayload(payload *models.ErrorResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetUserIDUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(401)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // GetUserIDNotFoundCode is the HTTP code returned for type GetUserIDNotFound
 const GetUserIDNotFoundCode int = 404
 

@@ -30,8 +30,14 @@ func configureAPI(api *operations.UserprofileAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.BasicAuthAuth = func(user string, pass string) (interface{}, error) {
-		return handlers.AuthenticateUser(user, pass)
+	api.BasicAuthAuth = func(username string, pass string) (interface{}, error) {
+		user, err := handlers.AuthenticateUser(username, pass)
+		if err != nil {
+			err = errors.New(401, err.Error())
+			return nil, err
+		}
+		
+		return user, err
 	}
 
 	api.DeleteUserIDHandler = operations.DeleteUserIDHandlerFunc(func(params operations.DeleteUserIDParams, principal interface{}) middleware.Responder {

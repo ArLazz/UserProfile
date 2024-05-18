@@ -60,3 +60,48 @@ func (o *GetUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Produ
 		panic(err) // let the recovery middleware deal with this
 	}
 }
+
+// GetUserUnauthorizedCode is the HTTP code returned for type GetUserUnauthorized
+const GetUserUnauthorizedCode int = 401
+
+/*
+GetUserUnauthorized Unauthorized
+
+swagger:response getUserUnauthorized
+*/
+type GetUserUnauthorized struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ErrorResponse `json:"body,omitempty"`
+}
+
+// NewGetUserUnauthorized creates GetUserUnauthorized with default headers values
+func NewGetUserUnauthorized() *GetUserUnauthorized {
+
+	return &GetUserUnauthorized{}
+}
+
+// WithPayload adds the payload to the get user unauthorized response
+func (o *GetUserUnauthorized) WithPayload(payload *models.ErrorResponse) *GetUserUnauthorized {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get user unauthorized response
+func (o *GetUserUnauthorized) SetPayload(payload *models.ErrorResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(401)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
