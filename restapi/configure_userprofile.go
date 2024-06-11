@@ -11,6 +11,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
+	"userprofile/database"
 	"userprofile/handlers"
 	"userprofile/models"
 	"userprofile/restapi/operations"
@@ -29,9 +30,9 @@ func configureAPI(api *operations.UserprofileAPI) http.Handler {
 	api.UseSwaggerUI()
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
-
+	handler := handlers.NewHandler(database.NewInMemoryDB())
 	api.BasicAuthAuth = func(username string, pass string) (interface{}, error) {
-		user, err := handlers.AuthenticateUser(username, pass)
+		user, err := handler.AuthenticateUser(username, pass)
 		if err != nil {
 			err = errors.New(401, err.Error())
 			return nil, err
@@ -47,7 +48,7 @@ func configureAPI(api *operations.UserprofileAPI) http.Handler {
 			return operations.NewDeleteUserIDForbidden().WithPayload(&models.ErrorResponse{Message: "you are not admin"})
 		}
 
-		err := handlers.DeleteUserByID(params)
+		err := handler.DeleteUserByID(params)
 		if err != nil {
 			api.Logger("failed to delete user: %s", err.Error())
 			return operations.NewDeleteUserIDNotFound().WithPayload(&models.ErrorResponse{Message: err.Error()})
@@ -58,13 +59,13 @@ func configureAPI(api *operations.UserprofileAPI) http.Handler {
 	})
 
 	api.GetUserHandler = operations.GetUserHandlerFunc(func(params operations.GetUserParams, principal interface{}) middleware.Responder {
-		payload := handlers.GetUser(params)
+		payload := handler.GetUser(params)
 		api.Logger("get users list")
 		return operations.NewGetUserOK().WithPayload(payload)
 	})
 
 	api.GetUserIDHandler = operations.GetUserIDHandlerFunc(func(params operations.GetUserIDParams, principal interface{}) middleware.Responder {
-		payload, err := handlers.GetUserByID(params)
+		payload, err := handler.GetUserByID(params)
 		if err != nil {
 			api.Logger("failed to get user by id(%s): %s", params.ID, err.Error())
 			return operations.NewGetUserIDNotFound().WithPayload(&models.ErrorResponse{Message: err.Error()})
@@ -80,7 +81,7 @@ func configureAPI(api *operations.UserprofileAPI) http.Handler {
 			return operations.NewDeleteUserIDForbidden().WithPayload(&models.ErrorResponse{Message: "you are not admin"})
 		}
 
-		err := handlers.AddUser(params)
+		err := handler.AddUser(params)
 		if err != nil {
 			api.Logger("failed to create user: %s", err.Error())
 			return operations.NewPostUserBadRequest().WithPayload(&models.ErrorResponse{Message: err.Error()})
@@ -97,7 +98,7 @@ func configureAPI(api *operations.UserprofileAPI) http.Handler {
 			return operations.NewDeleteUserIDForbidden().WithPayload(&models.ErrorResponse{Message: "you are not admin"})
 		}
 
-		err := handlers.UpdateUserByID(params)
+		err := handler.UpdateUserByID(params)
 		if err != nil {
 			api.Logger("failed to update user: %s", err.Error())
 			return operations.NewPutUserIDNotFound().WithPayload(&models.ErrorResponse{Message: err.Error()})
